@@ -1,13 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { OfferCard } from './OfferCard';
 
-interface HomePageProps {
-  offerCount: number;
-}
+import { useMemo, useState } from 'react';
+import { Header } from './header';
+import { OfferCard } from './offer-card';
 
-type SortType = 'Popular' | 'Price: low to high' | 'Price: high to low' | 'Top rated first';
-
-type Offer = {
+interface Offer {
+  id: number;
   premium: boolean;
   title: string;
   type: string;
@@ -15,12 +12,15 @@ type Offer = {
   isBookmarked: boolean;
   ratingPercent: number;
   image: string;
-};
+}
 
-const cities = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+type SortType = 'Popular' | 'Price: low to high' | 'Price: high to low' | 'Top rated first';
+
+const cities = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
 
 const offers: Offer[] = [
   {
+    id: 1,
     premium: true,
     title: 'Beautiful & luxurious apartment at great location',
     type: 'Apartment',
@@ -30,6 +30,7 @@ const offers: Offer[] = [
     image: 'img/apartment-01.jpg',
   },
   {
+    id: 2,
     premium: false,
     title: 'Wood and stone place',
     type: 'Room',
@@ -39,6 +40,7 @@ const offers: Offer[] = [
     image: 'img/room.jpg',
   },
   {
+    id: 3,
     premium: false,
     title: 'Canal View Prinsengracht',
     type: 'Apartment',
@@ -48,6 +50,7 @@ const offers: Offer[] = [
     image: 'img/apartment-02.jpg',
   },
   {
+    id: 4,
     premium: true,
     title: 'Nice, cozy, warm big bed apartment',
     type: 'Apartment',
@@ -57,8 +60,9 @@ const offers: Offer[] = [
     image: 'img/apartment-03.jpg',
   },
   {
+    id: 5,
     premium: false,
-    title: 'Wood and stone place',
+    title: 'Another Wood and stone place',
     type: 'Room',
     price: 80,
     isBookmarked: true,
@@ -67,7 +71,11 @@ const offers: Offer[] = [
   },
 ];
 
-export const HomePage: React.FC<HomePageProps> = ({ offerCount }) => {
+interface HomePageProps {
+  offerCount: number;
+}
+
+export function HomePage({ offerCount }: HomePageProps) {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortType, setSortType] = useState<SortType>('Popular');
 
@@ -93,39 +101,7 @@ export const HomePage: React.FC<HomePageProps> = ({ offerCount }) => {
 
   return (
     <div className="page page--gray page--main">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <a className="header__logo-link header__logo-link--active" href="/">
-                <img
-                  className="header__logo"
-                  src="img/logo.svg"
-                  alt="6 cities logo"
-                  width={81}
-                  height={41}
-                />
-              </a>
-            </div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper" />
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
-                  </a>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header isAuthorized favoritesCount={3} />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
@@ -139,7 +115,7 @@ export const HomePage: React.FC<HomePageProps> = ({ offerCount }) => {
                     className={`locations__item-link tabs__item ${
                       city === 'Amsterdam' ? 'tabs__item--active' : ''
                     }`}
-                    href="#"
+                    href="#todo"
                   >
                     <span>{city}</span>
                   </a>
@@ -157,6 +133,7 @@ export const HomePage: React.FC<HomePageProps> = ({ offerCount }) => {
 
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
+
                 <span
                   className="places__sorting-type"
                   tabIndex={0}
@@ -211,7 +188,9 @@ export const HomePage: React.FC<HomePageProps> = ({ offerCount }) => {
               <div className="cities__places-list places__list tabs__content">
                 {sortedOffers.slice(0, offerCount).map((offer) => (
                   <OfferCard
-                    key={offer.title + offer.price}
+                    key={offer.id}
+                    cardClassName="cities__card place-card"
+                    imageWrapperClassName="cities__image-wrapper place-card__image-wrapper"
                     premium={offer.premium}
                     title={offer.title}
                     type={offer.type}
@@ -232,4 +211,4 @@ export const HomePage: React.FC<HomePageProps> = ({ offerCount }) => {
       </main>
     </div>
   );
-};
+}

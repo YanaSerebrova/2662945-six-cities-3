@@ -1,58 +1,35 @@
 import { Header } from '../header';
 import { Footer } from '../footer';
-import { OfferCard } from '../offer-card';
+import { OfferCard, Offer } from '../offer-card';
 
-const favorites = [
-  {
-    city: 'Amsterdam',
-    items: [
-      {
-        id: 1,
-        premium: true,
-        title: 'Nice, cozy, warm big bed apartment',
-        type: 'Apartment',
-        price: 180,
-        isBookmarked: true,
-        ratingPercent: 100,
-        image: 'img/apartment-small-03.jpg',
-      },
-      {
-        id: 2,
-        premium: false,
-        title: 'Wood and stone place',
-        type: 'Room',
-        price: 80,
-        isBookmarked: true,
-        ratingPercent: 80,
-        image: 'img/room-small.jpg',
-      },
-    ],
-  },
-  {
-    city: 'Cologne',
-    items: [
-      {
-        id: 3,
-        premium: false,
-        title: 'White castle',
-        type: 'Apartment',
-        price: 180,
-        isBookmarked: true,
-        ratingPercent: 100,
-        image: 'img/apartment-small-04.jpg',
-      },
-    ],
-  },
-];
+interface FavoritesPageProps {
+  offers: Offer[];
+}
 
-export function FavoritesPage() {
-  const hasFavorites = favorites.length > 0;
+export function FavoritesPage({ offers }: FavoritesPageProps) {
+  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
+  const hasFavorites = favoriteOffers.length > 0;
+
+  const groupedFavorites = favoriteOffers.reduce((acc, offer) => {
+    const cityName = offer.city.name;
+    if (!acc[cityName]) {
+      acc[cityName] = [];
+    }
+    acc[cityName].push(offer);
+    return acc;
+  }, {} as Record<string, Offer[]>);
 
   return (
     <div className="page">
-      <Header isAuthorized favoritesCount={3} />
+      <Header isAuthorized favoritesCount={favoriteOffers.length} />
 
-      <main className={hasFavorites ? 'page__main page__main--favorites' : 'page__main page__main--favorites page__main--favorites-empty'}>
+      <main
+        className={
+          hasFavorites
+            ? 'page__main page__main--favorites'
+            : 'page__main page__main--favorites page__main--favorites-empty'
+        }
+      >
         <div className="page__favorites-container container">
           <section className={hasFavorites ? 'favorites' : 'favorites favorites--empty'}>
             {hasFavorites ? (
@@ -60,29 +37,23 @@ export function FavoritesPage() {
                 <h1 className="favorites__title">Saved listing</h1>
 
                 <ul className="favorites__list">
-                  {favorites.map((group) => (
-                    <li key={group.city} className="favorites__locations-items">
+                  {Object.entries(groupedFavorites).map(([city, cityOffers]) => (
+                    <li key={city} className="favorites__locations-items">
                       <div className="favorites__locations locations locations--current">
                         <div className="locations__item">
-                          <a className="locations__item-link" href="#todo">
-                            <span>{group.city}</span>
+                          <a className="locations__item-link" href="#">
+                            <span>{city}</span>
                           </a>
                         </div>
                       </div>
 
                       <div className="favorites__places">
-                        {group.items.map((offer) => (
+                        {cityOffers.map((offer) => (
                           <OfferCard
                             key={offer.id}
+                            offer={offer}
                             cardClassName="favorites__card place-card"
                             imageWrapperClassName="favorites__image-wrapper place-card__image-wrapper"
-                            premium={offer.premium}
-                            title={offer.title}
-                            type={offer.type}
-                            price={offer.price}
-                            isBookmarked={offer.isBookmarked}
-                            ratingPercent={offer.ratingPercent}
-                            image={offer.image}
                           />
                         ))}
                       </div>
@@ -109,3 +80,4 @@ export function FavoritesPage() {
     </div>
   );
 }
+

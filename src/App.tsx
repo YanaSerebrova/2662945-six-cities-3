@@ -6,7 +6,7 @@ import { OfferPage } from './components/pages/offer-page';
 import { AppRoute, AuthorizationStatus } from './const';
 import { NotFoundPage } from './components/pages/not-found-page';
 import { PrivateRoute } from './components/pages/private-route';
-import { Offer } from './components/offer-card';
+import { Offer } from './types';
 
 interface AppProps {
   offers: Offer[];

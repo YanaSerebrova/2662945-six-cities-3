@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { OfferCard, Offer } from './offer-card';
+import { OfferCard} from './offer-card';
+import { Offer } from '../types';
 
 interface OfferListProps {
   offers: Offer[];

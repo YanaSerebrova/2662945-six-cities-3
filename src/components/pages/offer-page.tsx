@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { Header } from '../header';
-import { OfferCard, Offer } from '../offer-card';
+import { OfferCard } from '../offer-card';
+import { Offer } from '../../types';
 import { ReviewForm } from '../review-form';
 
 interface OfferPageProps {
@@ -197,6 +198,7 @@ export function OfferPage({ offers }: OfferPageProps) {
                   rating: 4.0,
                   previewImage: 'img/room.jpg',
                   city: currentOffer.city,
+                  location: currentOffer.location,
                 }}
                 cardClassName="near-places__card place-card"
                 imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"
@@ -213,6 +215,7 @@ export function OfferPage({ offers }: OfferPageProps) {
                   rating: 4.2,
                   previewImage: 'img/apartment-02.jpg',
                   city: currentOffer.city,
+                  location: currentOffer.location,
                 }}
                 cardClassName="near-places__card place-card"
                 imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"
@@ -229,6 +232,7 @@ export function OfferPage({ offers }: OfferPageProps) {
                   rating: 5.0,
                   previewImage: 'img/apartment-03.jpg',
                   city: currentOffer.city,
+                  location: currentOffer.location,
                 }}
                 cardClassName="near-places__card place-card"
                 imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"

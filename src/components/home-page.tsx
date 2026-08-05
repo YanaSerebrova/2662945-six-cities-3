@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Header } from './header';
 import { OfferList } from './offer-list';
-import { Offer } from './offer-card';
+import { Offer } from '../types';
 import { Link } from 'react-router-dom';
+import { Map } from './map';
 
 type SortType = 'Popular' | 'Price: low to high' | 'Price: high to low' | 'Top rated first';
 
@@ -129,7 +130,9 @@ export function HomePage({ offers }: HomePageProps) {
             </section>
 
             <div className="cities__right-section">
-              <section className="cities__map map" />
+              <section className="cities__map map">
+                <Map offers={sortedOffers} />
+              </section>
             </div>
           </div>
         </div>

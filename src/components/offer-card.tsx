@@ -1,23 +1,5 @@
 import { Link } from 'react-router-dom';
-
-export type Offer = {
-  id: string;
-  title: string;
-  type: string;
-  price: number;
-  isPremium: boolean;
-  isFavorite: boolean;
-  rating: number;
-  previewImage: string;
-  city: {
-    name: string;
-    location: {
-      latitude: number;
-      longitude: number;
-      zoom: number;
-    };
-  };
-};
+import { Offer } from '../types';
 
 interface OfferCardProps {
   offer: Offer;

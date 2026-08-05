@@ -14,16 +14,16 @@ export function ReviewForm() {
 
   const isFormValid = rating !== '' && review.length >= 50 && review.length <= 300;
 
-  const handleRatingChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setRating(e.target.value);
+  const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    setRating(evt.target.value);
   };
 
-  const handleReviewChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setReview(e.target.value);
+  const handleReviewChange = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    setReview(evt.target.value);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
 
     setReview('');
     setRating('');

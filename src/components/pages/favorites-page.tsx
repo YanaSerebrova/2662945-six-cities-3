@@ -1,6 +1,7 @@
 import { Header } from '../header';
 import { Footer } from '../footer';
-import { OfferCard, Offer } from '../offer-card';
+import { OfferCard} from '../offer-card';
+import { Offer } from '../../types';
 
 interface FavoritesPageProps {
   offers: Offer[];

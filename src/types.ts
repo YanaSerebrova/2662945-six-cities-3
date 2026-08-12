@@ -21,3 +21,14 @@ export type Offer = {
   city: City;
   location: Location;
 };
+
+export type Review = {
+  id: string;
+  comment: string;
+  date: string;
+  rating: number;
+  user: {
+    name: string;
+    avatarUrl: string;
+  };
+};

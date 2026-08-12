@@ -4,10 +4,7 @@ import { OfferList } from './offer-list';
 import { Offer } from '../types';
 import { Link } from 'react-router-dom';
 import { Map } from './map';
-
-type SortType = 'Popular' | 'Price: low to high' | 'Price: high to low' | 'Top rated first';
-
-const cities = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
+import { SortType, cities } from '../const';
 
 interface HomePageProps {
   offers: Offer[];
@@ -16,6 +13,7 @@ interface HomePageProps {
 export function HomePage({ offers }: HomePageProps) {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortType, setSortType] = useState<SortType>('Popular');
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   const sortedOffers = useMemo(() => {
     const copiedOffers = [...offers];
@@ -35,6 +33,14 @@ export function HomePage({ offers }: HomePageProps) {
   const handleSortOptionClick = (value: SortType) => {
     setSortType(value);
     setIsSortOpen(false);
+  };
+
+  const handleCardMouseEnter = (offerId: string) => {
+    setActiveOfferId(offerId);
+  };
+
+  const handleCardMouseLeave = () => {
+    setActiveOfferId(null);
   };
 
   return (
@@ -126,12 +132,18 @@ export function HomePage({ offers }: HomePageProps) {
               <OfferList
                 offers={sortedOffers}
                 listClassName="cities__places-list places__list tabs__content"
+                onCardMouseEnter={handleCardMouseEnter}
+                onCardMouseLeave={handleCardMouseLeave}
               />
             </section>
 
             <div className="cities__right-section">
               <section className="cities__map map">
-                <Map offers={sortedOffers} />
+                <Map
+                  offers={sortedOffers}
+                  location={offers[0]?.city.location ?? { latitude: 52.374, longitude: 4.88969, zoom: 12 }}
+                  activeOfferId={activeOfferId}
+                />
               </section>
             </div>
           </div>

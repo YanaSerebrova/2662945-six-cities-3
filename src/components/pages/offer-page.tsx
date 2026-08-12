@@ -1,8 +1,13 @@
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { Header } from '../header';
-import { OfferCard } from '../offer-card';
 import { Offer } from '../../types';
 import { ReviewForm } from '../review-form';
+import { ReviewList } from '../review-list';
+import { OfferList } from '../offer-list';
+import { Map } from '../map';
+import { mockComments } from '../../mocks/comments';
+import { NEAR_PLACES_COUNT } from '../../const';
 
 interface OfferPageProps {
   offers: Offer[];
@@ -11,6 +16,7 @@ interface OfferPageProps {
 export function OfferPage({ offers }: OfferPageProps) {
   const { id } = useParams<{ id: string }>();
   const currentOffer = offers.find((offer) => offer.id === id);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   if (!currentOffer) {
     return (
@@ -23,7 +29,18 @@ export function OfferPage({ offers }: OfferPageProps) {
     );
   }
 
+  const nearbyOffers = offers
+    .filter((offer) => offer.id !== currentOffer.id)
+    .slice(0, NEAR_PLACES_COUNT);
+
   const ratingPercent = Math.round(currentOffer.rating) * 20;
+  const handleCardMouseEnter = (offerId: string) => {
+    setActiveOfferId(offerId);
+  };
+
+  const handleCardMouseLeave = () => {
+    setActiveOfferId(null);
+  };
 
   return (
     <div className="page">
@@ -137,110 +154,34 @@ export function OfferPage({ offers }: OfferPageProps) {
               </div>
 
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">
-                  Reviews &middot; <span className="reviews__amount">1</span>
-                </h2>
-
-                <ul className="reviews__list">
-                  <li className="reviews__item">
-                    <div className="reviews__user user">
-                      <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                        <img
-                          className="reviews__avatar user__avatar"
-                          src="img/avatar-max.jpg"
-                          width={54}
-                          height={54}
-                          alt="Reviews avatar"
-                        />
-                      </div>
-                      <span className="reviews__user-name">Max</span>
-                    </div>
-
-                    <div className="reviews__info">
-                      <div className="reviews__rating rating">
-                        <div className="reviews__stars rating__stars">
-                          <span style={{ width: '80%' }} />
-                          <span className="visually-hidden">Rating</span>
-                        </div>
-                      </div>
-                      <p className="reviews__text">
-                        A quiet cozy and picturesque that hides behind a a river by the unique
-                        lightness of Amsterdam. The building is green and from 18th century.
-                      </p>
-                      <time className="reviews__time" dateTime="2019-04-24">
-                        April 2019
-                      </time>
-                    </div>
-                  </li>
-                </ul>
-
+                <ReviewList reviews={mockComments} />
                 <ReviewForm />
               </section>
             </div>
           </div>
 
-          <section className="offer__map map" />
+          <section className="offer__map map">
+            <Map
+              offers={nearbyOffers}
+              location={currentOffer.location}
+              activeOfferId={activeOfferId}
+            />
+          </section>
         </section>
 
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-
-            <div className="near-places__list places__list">
-              <OfferCard
-                offer={{
-                  id: 'near-1',
-                  title: 'Wood and stone place',
-                  type: 'Room',
-                  price: 80,
-                  isPremium: false,
-                  isFavorite: true,
-                  rating: 4.0,
-                  previewImage: 'img/room.jpg',
-                  city: currentOffer.city,
-                  location: currentOffer.location,
-                }}
-                cardClassName="near-places__card place-card"
-                imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"
-              />
-
-              <OfferCard
-                offer={{
-                  id: 'near-2',
-                  title: 'Canal View Prinsengracht',
-                  type: 'Apartment',
-                  price: 132,
-                  isPremium: false,
-                  isFavorite: false,
-                  rating: 4.2,
-                  previewImage: 'img/apartment-02.jpg',
-                  city: currentOffer.city,
-                  location: currentOffer.location,
-                }}
-                cardClassName="near-places__card place-card"
-                imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"
-              />
-
-              <OfferCard
-                offer={{
-                  id: 'near-3',
-                  title: 'Nice, cozy, warm big bed apartment',
-                  type: 'Apartment',
-                  price: 180,
-                  isPremium: true,
-                  isFavorite: false,
-                  rating: 5.0,
-                  previewImage: 'img/apartment-03.jpg',
-                  city: currentOffer.city,
-                  location: currentOffer.location,
-                }}
-                cardClassName="near-places__card place-card"
-                imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"
-              />
-            </div>
+            <OfferList
+              offers={nearbyOffers}
+              listClassName="near-places__list places__list"
+              onCardMouseEnter={handleCardMouseEnter}
+              onCardMouseLeave={handleCardMouseLeave}
+            />
           </section>
         </div>
       </main>
     </div>
   );
 }
+

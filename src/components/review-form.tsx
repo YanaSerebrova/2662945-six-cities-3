@@ -1,12 +1,5 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
-
-const ratingTitles: Record<string, string> = {
-  '5': 'perfect',
-  '4': 'good',
-  '3': 'not bad',
-  '2': 'badly',
-  '1': 'terribly',
-};
+import { ratingTitles } from '../const';
 
 export function ReviewForm() {
   const [review, setReview] = useState('');

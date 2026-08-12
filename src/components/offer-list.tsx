@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { OfferCard} from './offer-card';
 import { Offer } from '../types';
 
 interface OfferListProps {
   offers: Offer[];
   listClassName: string;
+  onCardMouseEnter?: (offerId: string) => void;
+  onCardMouseLeave?: () => void;
 }
 
-export function OfferList({ offers, listClassName }: OfferListProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_activeOfferId, setActiveOfferId] = useState<string | null>(null);
+export function OfferList({ offers, listClassName, onCardMouseEnter,
+  onCardMouseLeave, }: OfferListProps) {
 
   return (
     <div className={listClassName}>
@@ -19,8 +19,8 @@ export function OfferList({ offers, listClassName }: OfferListProps) {
           offer={offer}
           cardClassName="cities__card place-card"
           imageWrapperClassName="cities__image-wrapper place-card__image-wrapper"
-          onMouseEnter={() => setActiveOfferId(offer.id)}
-          onMouseLeave={() => setActiveOfferId(null)}
+          onMouseEnter={() => onCardMouseEnter?.(offer.id)}
+          onMouseLeave={() => onCardMouseLeave?.()}
         />
       ))}
     </div>

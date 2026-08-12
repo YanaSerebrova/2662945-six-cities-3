@@ -1,26 +1,32 @@
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Offer } from '../types';
+import { Offer, Location } from '../types';
+import {DEFAULT_ZOOM} from '../const';
 
 interface MapProps {
   offers: Offer[];
+  location: Location;
+  activeOfferId: string | null;
 }
 
-const customIcon = L.icon({
+const defaultIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
 
-const MAP_CENTER: [number, number] = [52.374, 4.88969];
-const MAP_ZOOM = 12;
+const activeIcon = L.icon({
+  iconUrl: 'img/pin-active.svg',
+  iconSize: [27, 39],
+  iconAnchor: [13, 39],
+});
 
-export function Map({ offers }: MapProps) {
+export function Map({ offers, location, activeOfferId }: MapProps) {
   return (
     <MapContainer
-      center={MAP_CENTER}
-      zoom={MAP_ZOOM}
+      center={[location.latitude, location.longitude]}
+      zoom={location.zoom ?? DEFAULT_ZOOM}
       scrollWheelZoom={false}
       style={{ width: '100%', height: '100%' }}
     >
@@ -33,7 +39,7 @@ export function Map({ offers }: MapProps) {
         <Marker
           key={offer.id}
           position={[offer.location.latitude, offer.location.longitude]}
-          icon={customIcon}
+          icon={offer.id === activeOfferId ? activeIcon : defaultIcon}
         />
       ))}
     </MapContainer>

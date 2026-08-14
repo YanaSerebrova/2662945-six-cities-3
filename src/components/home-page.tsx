@@ -1,22 +1,27 @@
 import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Header } from './header';
 import { OfferList } from './offer-list';
-import { Offer } from '../types';
-import { Link } from 'react-router-dom';
 import { Map } from './map';
-import { SortType, cities } from '../const';
+import { CitiesList } from './cities-list';
+import { SortType } from '../const';
+import { RootState } from '../store';
 
-interface HomePageProps {
-  offers: Offer[];
-}
-
-export function HomePage({ offers }: HomePageProps) {
+export function HomePage() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortType, setSortType] = useState<SortType>('Popular');
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
+  const city = useSelector((state: RootState) => state.city);
+  const offers = useSelector((state: RootState) => state.offers);
+
+  const cityOffers = useMemo(
+    () => offers.filter((offer) => offer.city.name === city),
+    [city, offers]
+  );
+
   const sortedOffers = useMemo(() => {
-    const copiedOffers = [...offers];
+    const copiedOffers = [...cityOffers];
 
     switch (sortType) {
       case 'Price: low to high':
@@ -28,7 +33,7 @@ export function HomePage({ offers }: HomePageProps) {
       default:
         return copiedOffers;
     }
-  }, [sortType, offers]);
+  }, [sortType, cityOffers]);
 
   const handleSortOptionClick = (value: SortType) => {
     setSortType(value);
@@ -43,6 +48,12 @@ export function HomePage({ offers }: HomePageProps) {
     setActiveOfferId(null);
   };
 
+  const mapLocation = sortedOffers[0]?.city.location ?? {
+    latitude: 48.85661,
+    longitude: 2.351499,
+    zoom: 12,
+  };
+
   return (
     <div className="page page--gray page--main">
       <Header isAuthorized={false} favoritesCount={0} />
@@ -51,29 +62,16 @@ export function HomePage({ offers }: HomePageProps) {
         <h1 className="visually-hidden">Cities</h1>
 
         <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              {cities.map((city) => (
-                <li key={city} className="locations__item">
-                  <Link
-                    className={`locations__item-link tabs__item ${
-                      city === 'Amsterdam' ? 'tabs__item--active' : ''
-                    }`}
-                    to="/"
-                  >
-                    <span>{city}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <CitiesList />
         </div>
 
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{sortedOffers.length} places to stay in Amsterdam</b>
+              <b className="places__found">
+                {sortedOffers.length} places to stay in {city}
+              </b>
 
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
@@ -141,7 +139,7 @@ export function HomePage({ offers }: HomePageProps) {
               <section className="cities__map map">
                 <Map
                   offers={sortedOffers}
-                  location={offers[0]?.city.location ?? { latitude: 52.374, longitude: 4.88969, zoom: 12 }}
+                  location={mapLocation}
                   activeOfferId={activeOfferId}
                 />
               </section>

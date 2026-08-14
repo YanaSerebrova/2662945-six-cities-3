@@ -1,13 +1,11 @@
+import { useSelector } from 'react-redux';
 import { Header } from '../header';
 import { Footer } from '../footer';
-import { OfferCard} from '../offer-card';
-import { Offer } from '../../types';
+import { OfferCard } from '../offer-card';
+import { RootState } from '../../store';
 
-interface FavoritesPageProps {
-  offers: Offer[];
-}
-
-export function FavoritesPage({ offers }: FavoritesPageProps) {
+export function FavoritesPage() {
+  const offers = useSelector((state: RootState) => state.offers);
   const favoriteOffers = offers.filter((offer) => offer.isFavorite);
   const hasFavorites = favoriteOffers.length > 0;
 

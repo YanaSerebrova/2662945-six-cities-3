@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreator } from '../store/action';
 import { RootState } from '../store';
@@ -7,7 +8,11 @@ export function CitiesList() {
   const dispatch = useDispatch();
   const activeCity = useSelector((state: RootState) => state.city);
 
-  const handleCityClick = (city: typeof cities[number]) => {
+  const handleCityClick = (
+    evt: MouseEvent<HTMLAnchorElement>,
+    city: typeof cities[number]
+  ) => {
+    evt.preventDefault();
     dispatch(ActionCreator.changeCity(city));
   };
 
@@ -16,15 +21,15 @@ export function CitiesList() {
       <ul className="locations__list tabs__list">
         {cities.map((city) => (
           <li key={city} className="locations__item">
-            <button
+            <a
               className={`locations__item-link tabs__item ${
                 city === activeCity ? 'tabs__item--active' : ''
               }`}
-              onClick={() => handleCityClick(city)}
-              type="button"
+              href="/"
+              onClick={(evt) => handleCityClick(evt, city)}
             >
               <span>{city}</span>
-            </button>
+            </a>
           </li>
         ))}
       </ul>

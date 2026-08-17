@@ -1,5 +1,9 @@
 import { Offer } from '../types';
 
+const parisLocation = { latitude: 48.85661, longitude: 2.351499, zoom: 12 };
+const amsterdamLocation = { latitude: 52.370216, longitude: 4.895168, zoom: 12 };
+const cologneLocation = { latitude: 50.937531, longitude: 6.960279, zoom: 12 };
+
 export const mockOffers: Offer[] = [
   {
     id: '1',
@@ -10,8 +14,8 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     rating: 4.8,
     previewImage: 'img/apartment-01.jpg',
-    city: { name: 'Amsterdam', location: { latitude: 52.3909553943508, longitude: 4.85309666406198, zoom: 12 } },
-    location: { latitude: 52.3909553943508, longitude: 4.85309666406198, zoom: 16 },
+    city: { name: 'Amsterdam', location: amsterdamLocation },
+    location: { latitude: 52.390955, longitude: 4.853096, zoom: 16 },
   },
   {
     id: '2',
@@ -22,8 +26,8 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     rating: 4.0,
     previewImage: 'img/room.jpg',
-    city: { name: 'Amsterdam', location: { latitude: 50.938361, longitude: 6.959974, zoom: 12 } },
-    location: { latitude: 52.3609553943508, longitude: 4.85309666406198, zoom: 16 }
+    city: { name: 'Amsterdam', location: amsterdamLocation },
+    location: { latitude: 52.360955, longitude: 4.883096, zoom: 16 },
   },
   {
     id: '3',
@@ -34,8 +38,8 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     rating: 4.2,
     previewImage: 'img/apartment-02.jpg',
-    city: { name: 'Amsterdam', location: { latitude: 52.3609553943508, longitude: 4.85309666406198, zoom: 12 } },
-    location: { latitude: 52.3909553943508, longitude: 4.929309666406198, zoom: 16 }
+    city: { name: 'Amsterdam', location: amsterdamLocation },
+    location: { latitude: 52.379955, longitude: 4.886096, zoom: 16 },
   },
   {
     id: '4',
@@ -46,7 +50,55 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     rating: 5.0,
     previewImage: 'img/apartment-03.jpg',
-    city: { name: 'Amsterdam', location: { latitude: 50.846557, longitude: 4.351697, zoom: 12 } },
-    location: { latitude: 52.3809553943508, longitude: 4.939309666406198, zoom: 16 }
+    city: { name: 'Amsterdam', location: amsterdamLocation },
+    location: { latitude: 52.365955, longitude: 4.903096, zoom: 16 },
+  },
+  {
+    id: '5',
+    title: 'Perfectly located cozy studio',
+    type: 'Apartment',
+    price: 150,
+    isPremium: false,
+    isFavorite: false,
+    rating: 4.5,
+    previewImage: 'img/apartment-01.jpg',
+    city: { name: 'Paris', location: parisLocation },
+    location: { latitude: 48.86061, longitude: 2.341499, zoom: 16 },
+  },
+  {
+    id: '6',
+    title: 'Charming room near Louvre',
+    type: 'Room',
+    price: 95,
+    isPremium: true,
+    isFavorite: true,
+    rating: 3.8,
+    previewImage: 'img/room.jpg',
+    city: { name: 'Paris', location: parisLocation },
+    location: { latitude: 48.85261, longitude: 2.355499, zoom: 16 },
+  },
+  {
+    id: '7',
+    title: 'Loft Studio in the Central Area',
+    type: 'Apartment',
+    price: 200,
+    isPremium: true,
+    isFavorite: false,
+    rating: 4.9,
+    previewImage: 'img/apartment-02.jpg',
+    city: { name: 'Paris', location: parisLocation },
+    location: { latitude: 48.85461, longitude: 2.348499, zoom: 16 },
+  },
+  {
+    id: '8',
+    title: 'Modern apartment near cathedral',
+    type: 'Apartment',
+    price: 110,
+    isPremium: false,
+    isFavorite: false,
+    rating: 4.1,
+    previewImage: 'img/apartment-03.jpg',
+    city: { name: 'Cologne', location: cologneLocation },
+    location: { latitude: 50.940361, longitude: 6.961974, zoom: 16 },
   },
 ];

@@ -1,8 +1,9 @@
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useEffect } from 'react';
 import { Offer, Location } from '../types';
-import {DEFAULT_ZOOM} from '../const';
+import { DEFAULT_ZOOM } from '../const';
 
 interface MapProps {
   offers: Offer[];
@@ -22,6 +23,16 @@ const activeIcon = L.icon({
   iconAnchor: [13, 39],
 });
 
+function MapController({ location }: { location: Location }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView([location.latitude, location.longitude], location.zoom ?? DEFAULT_ZOOM);
+  }, [location, map]);
+
+  return null;
+}
+
 export function Map({ offers, location, activeOfferId }: MapProps) {
   return (
     <MapContainer
@@ -30,6 +41,8 @@ export function Map({ offers, location, activeOfferId }: MapProps) {
       scrollWheelZoom={false}
       style={{ width: '100%', height: '100%' }}
     >
+      <MapController location={location} />
+
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

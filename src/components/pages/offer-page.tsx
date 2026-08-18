@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
 import { Header } from '../header';
 import { Offer } from '../../types';
 import { ReviewForm } from '../review-form';
@@ -16,7 +15,6 @@ interface OfferPageProps {
 export function OfferPage({ offers }: OfferPageProps) {
   const { id } = useParams<{ id: string }>();
   const currentOffer = offers.find((offer) => offer.id === id);
-  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   if (!currentOffer) {
     return (
@@ -34,13 +32,6 @@ export function OfferPage({ offers }: OfferPageProps) {
     .slice(0, NEAR_PLACES_COUNT);
 
   const ratingPercent = Math.round(currentOffer.rating) * 20;
-  const handleCardMouseEnter = (offerId: string) => {
-    setActiveOfferId(offerId);
-  };
-
-  const handleCardMouseLeave = () => {
-    setActiveOfferId(null);
-  };
 
   return (
     <div className="page">
@@ -164,7 +155,7 @@ export function OfferPage({ offers }: OfferPageProps) {
             <Map
               offers={nearbyOffers}
               location={currentOffer.location}
-              activeOfferId={activeOfferId}
+              activeOfferId={null}
             />
           </section>
         </section>
@@ -175,8 +166,6 @@ export function OfferPage({ offers }: OfferPageProps) {
             <OfferList
               offers={nearbyOffers}
               listClassName="near-places__list places__list"
-              onCardMouseEnter={handleCardMouseEnter}
-              onCardMouseLeave={handleCardMouseLeave}
             />
           </section>
         </div>

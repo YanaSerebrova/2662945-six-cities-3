@@ -1,18 +1,16 @@
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Header } from '../header';
-import { Offer } from '../../types';
 import { ReviewForm } from '../review-form';
 import { ReviewList } from '../review-list';
 import { OfferList } from '../offer-list';
 import { Map } from '../map';
 import { mockComments } from '../../mocks/comments';
 import { NEAR_PLACES_COUNT } from '../../const';
+import { RootState } from '../../store';
 
-interface OfferPageProps {
-  offers: Offer[];
-}
-
-export function OfferPage({ offers }: OfferPageProps) {
+export function OfferPage() {
+  const offers = useSelector((state: RootState) => state.offers);
   const { id } = useParams<{ id: string }>();
   const currentOffer = offers.find((offer) => offer.id === id);
 

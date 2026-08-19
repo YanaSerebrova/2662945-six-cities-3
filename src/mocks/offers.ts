@@ -1,4 +1,4 @@
-import { Offer } from '../types';
+/*import { Offer } from '../types';
 
 const parisLocation = { latitude: 48.85661, longitude: 2.351499, zoom: 12 };
 const amsterdamLocation = { latitude: 52.370216, longitude: 4.895168, zoom: 12 };
@@ -102,3 +102,4 @@ export const mockOffers: Offer[] = [
     location: { latitude: 50.940361, longitude: 6.961974, zoom: 16 },
   },
 ];
+*/

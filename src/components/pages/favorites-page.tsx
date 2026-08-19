@@ -1,24 +1,24 @@
+import { useSelector } from 'react-redux';
 import { Header } from '../header';
 import { Footer } from '../footer';
-import { OfferCard} from '../offer-card';
+import { OfferCard } from '../offer-card';
+import { RootState } from '../../store';
 import { Offer } from '../../types';
 
-interface FavoritesPageProps {
-  offers: Offer[];
-}
+export function FavoritesPage() {
+  const offers = useSelector((state: RootState) => state.offers);
 
-export function FavoritesPage({ offers }: FavoritesPageProps) {
-  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
+  const favoriteOffers = offers.filter((offer: Offer) => offer.isFavorite);
   const hasFavorites = favoriteOffers.length > 0;
 
-  const groupedFavorites = favoriteOffers.reduce((acc, offer) => {
+  const groupedFavorites = favoriteOffers.reduce((acc: Record<string, Offer[]>, offer: Offer) => {
     const cityName = offer.city.name;
     if (!acc[cityName]) {
       acc[cityName] = [];
     }
     acc[cityName].push(offer);
     return acc;
-  }, {} as Record<string, Offer[]>);
+  }, {});
 
   return (
     <div className="page">
@@ -49,7 +49,7 @@ export function FavoritesPage({ offers }: FavoritesPageProps) {
                       </div>
 
                       <div className="favorites__places">
-                        {cityOffers.map((offer) => (
+                        {cityOffers.map((offer: Offer) => (
                           <OfferCard
                             key={offer.id}
                             offer={offer}
@@ -81,4 +81,3 @@ export function FavoritesPage({ offers }: FavoritesPageProps) {
     </div>
   );
 }
-

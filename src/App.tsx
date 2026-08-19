@@ -8,15 +8,16 @@ import { OfferPage } from './components/pages/offer-page';
 import { AppRoute, AuthorizationStatus } from './const';
 import { NotFoundPage } from './components/pages/not-found-page';
 import { PrivateRoute } from './components/pages/private-route';
-import { mockOffers } from './mocks/offers';
-import { ActionCreator } from './store/action';
+import { fetchOffersAction } from './store/action';
+import { AppDispatch } from './store';
 
 function App() {
-  const dispatch = useDispatch();
+
+  const dispatch = useDispatch<AppDispatch>();
   const isAuthorized = false;
 
   useEffect(() => {
-    dispatch(ActionCreator.setOffers(mockOffers));
+    dispatch(fetchOffersAction());
   }, [dispatch]);
 
   return (
@@ -27,11 +28,11 @@ function App() {
         path={AppRoute.Favorites}
         element={
           <PrivateRoute authorizationStatus={isAuthorized ? AuthorizationStatus.Auth : AuthorizationStatus.NoAuth}>
-            <FavoritesPage offers={mockOffers} />
+            <FavoritesPage />
           </PrivateRoute>
         }
       />
-      <Route path={AppRoute.Offer} element={<OfferPage offers={mockOffers} />} />
+      <Route path={AppRoute.Offer} element={<OfferPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

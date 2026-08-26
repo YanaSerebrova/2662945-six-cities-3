@@ -1,4 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logoutAction } from '../store/action';
+import { AppDispatch } from '../store';
+import { AppRoute } from '../const';
 
 type HeaderProps = {
   isAuthorized: boolean;
@@ -6,6 +10,16 @@ type HeaderProps = {
 };
 
 export function Header({ isAuthorized, favoritesCount = 0 }: HeaderProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const handleLogoutClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    dispatch(logoutAction()).then(() => {
+      navigate(AppRoute.Main);
+    });
+  };
+
   return (
     <header className="header">
       <div className="container">
@@ -37,12 +51,13 @@ export function Header({ isAuthorized, favoritesCount = 0 }: HeaderProps) {
                     </Link>
                   </li>
                   <li className="header__nav-item">
-                    <Link
+                    <a
                       className="header__nav-link"
-                      to="/"
+                      href="#"
+                      onClick={handleLogoutClick}
                     >
                       <span className="header__signout">Sign out</span>
-                    </Link>
+                    </a>
                   </li>
                 </>
               ) : (

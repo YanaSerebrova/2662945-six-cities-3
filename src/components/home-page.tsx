@@ -6,7 +6,7 @@ import { Map } from './map';
 import { CitiesList } from './cities-list';
 import { PlacesSorting } from './sorting-places';
 import { Spinner } from './spinner';
-import { SortType, DEFAULT_CITY_LOCATION } from '../const';
+import { SortType, DEFAULT_CITY_LOCATION, AuthorizationStatus } from '../const';
 import { RootState } from '../store';
 
 export function HomePage() {
@@ -17,6 +17,8 @@ export function HomePage() {
   const city = useSelector((state: RootState) => state.city);
   const offers = useSelector((state: RootState) => state.offers);
   const isLoading = useSelector((state: RootState) => state.isLoading);
+
+  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
 
   const cityOffers = useMemo(
     () => offers.filter((offer) => offer.city.name === city),
@@ -51,9 +53,11 @@ export function HomePage() {
 
   const mapLocation = sortedOffers[0]?.city.location ?? DEFAULT_CITY_LOCATION;
 
+  const isAuthorized = authorizationStatus === AuthorizationStatus.Auth;
+
   return (
     <div className="page page--gray page--main">
-      <Header isAuthorized={false} favoritesCount={0} />
+      <Header isAuthorized={isAuthorized} favoritesCount={0} />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">

@@ -1,39 +1,55 @@
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Header } from '../header';
 import { ReviewForm } from '../review-form';
 import { ReviewList } from '../review-list';
 import { OfferList } from '../offer-list';
 import { Map } from '../map';
-import { mockComments } from '../../mocks/comments';
-import { NEAR_PLACES_COUNT } from '../../const';
-import { RootState } from '../../store';
+import { AuthorizationStatus, NEAR_PLACES_COUNT } from '../../const';
+import { RootState, AppDispatch } from '../../store';
+import {
+  fetchOfferAction,
+  fetchNearbyOffersAction,
+  fetchCommentsAction
+} from '../../store/action';
+import { Spinner } from '../spinner';
 
 export function OfferPage() {
-  const offers = useSelector((state: RootState) => state.offers);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const currentOffer = offers.find((offer) => offer.id === id);
 
-  if (!currentOffer) {
-    return (
-      <div className="page page--gray">
-        <Header isAuthorized={false} favoritesCount={0} />
-        <main className="page__main page__main--index">
-          <p style={{ textAlign: 'center', marginTop: '50px' }}>Offer not found</p>
-        </main>
-      </div>
-    );
+  const currentOffer = useSelector((state: RootState) => state.currentOffer);
+  const nearbyOffers = useSelector((state: RootState) => state.nearbyOffers);
+  const comments = useSelector((state: RootState) => state.comments);
+  const isOfferDataLoading = useSelector((state: RootState) => state.isOfferDataLoading);
+  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOfferAction(id));
+      dispatch(fetchNearbyOffersAction(id));
+      dispatch(fetchCommentsAction(id));
+    }
+  }, [id, dispatch]);
+
+  if (!isOfferDataLoading && !currentOffer) {
+    navigate('/404', { replace: true });
+    return null;
   }
 
-  const nearbyOffers = offers
-    .filter((offer) => offer.id !== currentOffer.id)
-    .slice(0, NEAR_PLACES_COUNT);
+  if (isOfferDataLoading || !currentOffer) {
+    return <Spinner />;
+  }
 
+  const limitedNearbyOffers = nearbyOffers.slice(0, NEAR_PLACES_COUNT);
   const ratingPercent = Math.round(currentOffer.rating) * 20;
+  const isAuthorized = authorizationStatus === AuthorizationStatus.Auth;
 
   return (
     <div className="page">
-      <Header isAuthorized={false} favoritesCount={0} />
+      <Header isAuthorized={isAuthorized} favoritesCount={0} />
 
       <main className="page__main page__main--offer">
         <section className="offer">
@@ -143,15 +159,15 @@ export function OfferPage() {
               </div>
 
               <section className="offer__reviews reviews">
-                <ReviewList reviews={mockComments} />
-                <ReviewForm />
+                <ReviewList reviews={comments} />
+                {isAuthorized && <ReviewForm offerId={currentOffer.id} />}
               </section>
             </div>
           </div>
 
           <section className="offer__map map">
             <Map
-              offers={nearbyOffers}
+              offers={limitedNearbyOffers}
               location={currentOffer.location}
               activeOfferId={null}
             />
@@ -162,7 +178,7 @@ export function OfferPage() {
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <OfferList
-              offers={nearbyOffers}
+              offers={limitedNearbyOffers}
               listClassName="near-places__list places__list"
             />
           </section>
@@ -171,4 +187,3 @@ export function OfferPage() {
     </div>
   );
 }
-

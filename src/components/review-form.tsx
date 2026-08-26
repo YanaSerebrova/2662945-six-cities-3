@@ -1,9 +1,18 @@
 import { Fragment, useState, FormEvent, ChangeEvent } from 'react';
+import { useDispatch } from 'react-redux';
 import { ratingTitles } from '../const';
+import { postCommentAction } from '../store/action';
+import { AppDispatch } from '../store';
 
-export function ReviewForm() {
+interface ReviewFormProps {
+  offerId: string;
+}
+
+export function ReviewForm({ offerId }: ReviewFormProps) {
+  const dispatch = useDispatch<AppDispatch>();
   const [review, setReview] = useState('');
   const [rating, setRating] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFormValid = rating !== '' && review.length >= 50 && review.length <= 300;
 
@@ -18,8 +27,29 @@ export function ReviewForm() {
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    setReview('');
-    setRating('');
+    if (!offerId || !isFormValid) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    dispatch(
+      postCommentAction({
+        offerId,
+        comment: review,
+        rating: Number(rating),
+      })
+    )
+      .unwrap()
+      .then(() => {
+        setReview('');
+        setRating('');
+      })
+      .catch(() => {
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -39,6 +69,7 @@ export function ReviewForm() {
               type="radio"
               checked={rating === value}
               onChange={handleRatingChange}
+              disabled={isSubmitting}
             />
             <label
               htmlFor={`${value}-stars`}
@@ -60,6 +91,7 @@ export function ReviewForm() {
         placeholder="Tell how was your stay, what you like and what can be improved"
         value={review}
         onChange={handleReviewChange}
+        disabled={isSubmitting}
       />
 
       <div className="reviews__button-wrapper">
@@ -71,9 +103,9 @@ export function ReviewForm() {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting}
         >
-          Submit
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
       </div>
     </form>

@@ -1,4 +1,4 @@
-import { OfferCard} from './offer-card';
+import { OfferCard } from './offer-card';
 import { Offer } from '../types';
 
 interface OfferListProps {
@@ -10,9 +10,14 @@ interface OfferListProps {
   onCardMouseLeave?: () => void;
 }
 
-export function OfferList({ offers, listClassName, cardClassName, imageWrapperClassName,  onCardMouseEnter,
-  onCardMouseLeave, }: OfferListProps) {
-
+export function OfferList({
+  offers,
+  listClassName,
+  cardClassName,
+  imageWrapperClassName,
+  onCardMouseEnter,
+  onCardMouseLeave,
+}: OfferListProps) {
   return (
     <div className={listClassName}>
       {offers.map((offer) => (

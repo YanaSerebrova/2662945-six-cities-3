@@ -4,11 +4,13 @@ import { Offer } from '../types';
 interface OfferListProps {
   offers: Offer[];
   listClassName: string;
+  cardClassName: string;
+  imageWrapperClassName: string;
   onCardMouseEnter?: (offerId: string) => void;
   onCardMouseLeave?: () => void;
 }
 
-export function OfferList({ offers, listClassName, onCardMouseEnter,
+export function OfferList({ offers, listClassName, cardClassName, imageWrapperClassName,  onCardMouseEnter,
   onCardMouseLeave, }: OfferListProps) {
 
   return (
@@ -17,8 +19,8 @@ export function OfferList({ offers, listClassName, onCardMouseEnter,
         <OfferCard
           key={offer.id}
           offer={offer}
-          cardClassName="cities__card place-card"
-          imageWrapperClassName="cities__image-wrapper place-card__image-wrapper"
+          cardClassName={cardClassName}
+          imageWrapperClassName={imageWrapperClassName}
           onMouseEnter={() => onCardMouseEnter?.(offer.id)}
           onMouseLeave={() => onCardMouseLeave?.()}
         />

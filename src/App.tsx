@@ -13,7 +13,7 @@ import { AppDispatch, RootState } from './store';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
+  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
 
   useEffect(() => {
     dispatch(checkAuthAction());

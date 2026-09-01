@@ -2,23 +2,13 @@ import { useSelector } from 'react-redux';
 import { Header } from '../header';
 import { Footer } from '../footer';
 import { OfferCard } from '../offer-card';
-import { RootState } from '../../store';
+import { getFavoriteOffers, getGroupedFavoriteOffers } from '../../store/selectors';
 import { Offer } from '../../types';
 
 export function FavoritesPage() {
-  const offers = useSelector((state: RootState) => state.offers);
-
-  const favoriteOffers = offers.filter((offer: Offer) => offer.isFavorite);
+  const favoriteOffers = useSelector(getFavoriteOffers);
+  const groupedFavorites = useSelector(getGroupedFavoriteOffers);
   const hasFavorites = favoriteOffers.length > 0;
-
-  const groupedFavorites = favoriteOffers.reduce((acc: Record<string, Offer[]>, offer: Offer) => {
-    const cityName = offer.city.name;
-    if (!acc[cityName]) {
-      acc[cityName] = [];
-    }
-    acc[cityName].push(offer);
-    return acc;
-  }, {});
 
   return (
     <div className="page">

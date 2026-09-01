@@ -20,6 +20,16 @@ export type Offer = {
   previewImage: string;
   city: City;
   location: Location;
+  images: string[];
+  bedrooms: number;
+  maxAdults: number;
+  goods: string[];
+  description: string;
+  host: {
+    name: string;
+    avatarUrl: string;
+    isPro: boolean;
+  };
 };
 
 export type Review = {

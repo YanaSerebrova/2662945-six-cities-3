@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react'; // <-- ДОБАВЛЕНО: useCallback
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreator } from '../store/action';
 import { RootState } from '../store';
@@ -6,15 +6,16 @@ import { cities } from '../const';
 
 export function CitiesList() {
   const dispatch = useDispatch();
-  const activeCity = useSelector((state: RootState) => state.city);
 
-  const handleCityClick = (
-    evt: MouseEvent<HTMLAnchorElement>,
-    city: typeof cities[number]
-  ) => {
-    evt.preventDefault();
-    dispatch(ActionCreator.changeCity(city));
-  };
+  const activeCity = useSelector((state: RootState) => state.app.city);
+
+  const handleCityClick = useCallback(
+    (evt: MouseEvent<HTMLAnchorElement>, city: typeof cities[number]) => {
+      evt.preventDefault();
+      dispatch(ActionCreator.changeCity(city));
+    },
+    [dispatch]
+  );
 
   return (
     <section className="locations container">

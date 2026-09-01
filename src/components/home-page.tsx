@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Header } from './header';
 import { OfferList } from './offer-list';
@@ -8,17 +8,19 @@ import { PlacesSorting } from './sorting-places';
 import { Spinner } from './spinner';
 import { SortType, DEFAULT_CITY_LOCATION, AuthorizationStatus } from '../const';
 import { RootState } from '../store';
+import { getFavoriteOffers } from '../store/selectors';
 
 export function HomePage() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortType, setSortType] = useState<SortType>(SortType.Popular);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
-  const city = useSelector((state: RootState) => state.city);
-  const offers = useSelector((state: RootState) => state.offers);
-  const isLoading = useSelector((state: RootState) => state.isLoading);
+  const city = useSelector((state: RootState) => state.app.city);
+  const offers = useSelector((state: RootState) => state.app.offers);
+  const isLoading = useSelector((state: RootState) => state.app.isLoading);
+  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
 
-  const authorizationStatus = useSelector((state: RootState) => state.authorizationStatus);
+  const favoriteOffers = useSelector(getFavoriteOffers);
 
   const cityOffers = useMemo(
     () => offers.filter((offer) => offer.city.name === city),
@@ -39,25 +41,26 @@ export function HomePage() {
     }
   }, [sortType, cityOffers]);
 
+  const handleSortToggle = useCallback(() => setIsSortOpen((prev) => !prev), []);
+
+  const handleSortOptionClick = useCallback((value: SortType) => {
+    setSortType(value);
+    setIsSortOpen(false);
+  }, []);
+
+  const handleCardMouseEnter = useCallback((offerId: string) => setActiveOfferId(offerId), []);
+  const handleCardMouseLeave = useCallback(() => setActiveOfferId(null), []);
+
   if (isLoading) {
     return <Spinner />;
   }
 
-  const handleSortToggle = () => setIsSortOpen((prev) => !prev);
-  const handleSortOptionClick = (value: SortType) => {
-    setSortType(value);
-    setIsSortOpen(false);
-  };
-  const handleCardMouseEnter = (offerId: string) => setActiveOfferId(offerId);
-  const handleCardMouseLeave = () => setActiveOfferId(null);
-
   const mapLocation = sortedOffers[0]?.city.location ?? DEFAULT_CITY_LOCATION;
-
   const isAuthorized = authorizationStatus === AuthorizationStatus.Auth;
 
   return (
     <div className="page page--gray page--main">
-      <Header isAuthorized={isAuthorized} favoritesCount={0} />
+      <Header isAuthorized={isAuthorized} favoritesCount={favoriteOffers.length} />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
@@ -79,6 +82,8 @@ export function HomePage() {
               <OfferList
                 offers={sortedOffers}
                 listClassName="cities__places-list places__list tabs__content"
+                cardClassName="cities__card place-card"
+                imageWrapperClassName="cities__image-wrapper place-card__image-wrapper"
                 onCardMouseEnter={handleCardMouseEnter}
                 onCardMouseLeave={handleCardMouseLeave}
               />

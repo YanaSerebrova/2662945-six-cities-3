@@ -103,6 +103,18 @@ export const logoutAction = createAsyncThunk<
   }
 );
 
+export const toggleFavoriteAction = createAsyncThunk<
+  Offer,
+  { offerId: string; status: number },
+  { extra: AxiosInstance }
+>(
+  'offer/toggleFavorite',
+  async ({ offerId, status }, { extra: api }) => {
+    const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
+    return data;
+  }
+);
+
 export const setAuthorizationStatus = (status: AuthorizationStatus) => ({
   type: 'user/setAuthorizationStatus',
   payload: status,

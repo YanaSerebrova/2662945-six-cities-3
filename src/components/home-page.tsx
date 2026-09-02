@@ -1,16 +1,21 @@
 import { useMemo, useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Header } from './header';
 import { OfferList } from './offer-list';
 import { Map } from './map';
 import { CitiesList } from './cities-list';
 import { PlacesSorting } from './sorting-places';
 import { Spinner } from './spinner';
-import { SortType, DEFAULT_CITY_LOCATION, AuthorizationStatus } from '../const';
-import { RootState } from '../store';
+import { SortType, DEFAULT_CITY_LOCATION, AuthorizationStatus, AppRoute } from '../const';
+import { RootState, AppDispatch } from '../store';
 import { getFavoriteOffers } from '../store/selectors';
+import { toggleFavoriteAction } from '../store/action';
 
 export function HomePage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortType, setSortType] = useState<SortType>(SortType.Popular);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
@@ -19,7 +24,6 @@ export function HomePage() {
   const offers = useSelector((state: RootState) => state.app.offers);
   const isLoading = useSelector((state: RootState) => state.app.isLoading);
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
-
   const favoriteOffers = useSelector(getFavoriteOffers);
 
   const cityOffers = useMemo(
@@ -51,6 +55,17 @@ export function HomePage() {
   const handleCardMouseEnter = useCallback((offerId: string) => setActiveOfferId(offerId), []);
   const handleCardMouseLeave = useCallback(() => setActiveOfferId(null), []);
 
+  const handleFavoriteClick = useCallback(
+    (offerId: string, isFavorite: boolean) => {
+      if (authorizationStatus !== AuthorizationStatus.Auth) {
+        navigate(AppRoute.Login);
+        return;
+      }
+      dispatch(toggleFavoriteAction({ offerId, status: isFavorite ? 0 : 1 }));
+    },
+    [authorizationStatus, dispatch, navigate]
+  );
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -70,23 +85,39 @@ export function HomePage() {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">
-                {sortedOffers.length} places to stay in {city}
-              </b>
-              <PlacesSorting
-                activeSort={sortType}
-                isOpen={isSortOpen}
-                onToggle={handleSortToggle}
-                onSortChange={handleSortOptionClick}
-              />
-              <OfferList
-                offers={sortedOffers}
-                listClassName="cities__places-list places__list tabs__content"
-                cardClassName="cities__card place-card"
-                imageWrapperClassName="cities__image-wrapper place-card__image-wrapper"
-                onCardMouseEnter={handleCardMouseEnter}
-                onCardMouseLeave={handleCardMouseLeave}
-              />
+              {sortedOffers.length === 0 ? (
+                <div className="cities__places-container cities__places-container--empty container">
+                  <section className="cities__no-places">
+                    <div className="cities__status-wrapper tabs__content">
+                      <b className="cities__status">No places to stay available</b>
+                      <p className="cities__status-description">
+                        We could not find any property available at the moment in {city}
+                      </p>
+                    </div>
+                  </section>
+                </div>
+              ) : (
+                <>
+                  <b className="places__found">
+                    {sortedOffers.length} places to stay in {city}
+                  </b>
+                  <PlacesSorting
+                    activeSort={sortType}
+                    isOpen={isSortOpen}
+                    onToggle={handleSortToggle}
+                    onSortChange={handleSortOptionClick}
+                  />
+                  <OfferList
+                    offers={sortedOffers}
+                    listClassName="cities__places-list places__list tabs__content"
+                    cardClassName="cities__card place-card"
+                    imageWrapperClassName="cities__image-wrapper place-card__image-wrapper"
+                    onCardMouseEnter={handleCardMouseEnter}
+                    onCardMouseLeave={handleCardMouseLeave}
+                    onFavoriteClick={handleFavoriteClick}
+                  />
+                </>
+              )}
             </section>
             <div className="cities__right-section">
               <section className="cities__map map">
@@ -103,3 +134,4 @@ export function HomePage() {
     </div>
   );
 }
+

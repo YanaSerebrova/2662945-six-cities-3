@@ -1,5 +1,11 @@
 import { Offer, Review } from '../../types';
-import { fetchOfferAction, fetchNearbyOffersAction, fetchCommentsAction, postCommentAction } from '../action';
+import {
+  fetchOfferAction,
+  fetchNearbyOffersAction,
+  fetchCommentsAction,
+  postCommentAction,
+  toggleFavoriteAction
+} from '../action';
 
 export type OfferState = {
   currentOffer: Offer | null;
@@ -21,7 +27,8 @@ export type OfferAction =
   | ReturnType<typeof fetchOfferAction.rejected>
   | ReturnType<typeof fetchNearbyOffersAction.fulfilled>
   | ReturnType<typeof fetchCommentsAction.fulfilled>
-  | ReturnType<typeof postCommentAction.fulfilled>;
+  | ReturnType<typeof postCommentAction.fulfilled>
+  | ReturnType<typeof toggleFavoriteAction.fulfilled>;
 
 export const offerReducer = (state = initialOfferState, action: OfferAction): OfferState => {
   switch (action.type) {
@@ -44,6 +51,18 @@ export const offerReducer = (state = initialOfferState, action: OfferAction): Of
     case postCommentAction.fulfilled.type: {
       const typedAction = action as ReturnType<typeof postCommentAction.fulfilled>;
       return { ...state, comments: [typedAction.payload, ...state.comments] };
+    }
+
+    case toggleFavoriteAction.fulfilled.type: {
+      const typedAction = action as ReturnType<typeof toggleFavoriteAction.fulfilled>;
+      const updatedOffer = typedAction.payload;
+      return {
+        ...state,
+        currentOffer: state.currentOffer?.id === updatedOffer.id ? updatedOffer : state.currentOffer,
+        nearbyOffers: state.nearbyOffers.map((offer) =>
+          offer.id === updatedOffer.id ? updatedOffer : offer
+        ),
+      };
     }
 
     default:

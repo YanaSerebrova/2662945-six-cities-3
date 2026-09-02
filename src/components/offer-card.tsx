@@ -8,6 +8,7 @@ interface OfferCardProps {
   imageWrapperClassName: string;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  onFavoriteClick?: () => void;
 }
 
 function OfferCardComponent({
@@ -16,6 +17,7 @@ function OfferCardComponent({
   imageWrapperClassName,
   onMouseEnter,
   onMouseLeave,
+  onFavoriteClick,
 }: OfferCardProps) {
   const ratingPercent = Math.round(offer.rating) * 20;
 
@@ -55,6 +57,7 @@ function OfferCardComponent({
               offer.isFavorite ? 'place-card__bookmark-button--active' : ''
             }`}
             type="button"
+            onClick={onFavoriteClick}
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>
               <use href="#icon-bookmark" />

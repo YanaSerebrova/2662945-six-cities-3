@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Header } from '../header';
@@ -6,12 +6,13 @@ import { ReviewForm } from '../review-form';
 import { ReviewList } from '../review-list';
 import { OfferList } from '../offer-list';
 import { Map } from '../map';
-import { AuthorizationStatus, NEAR_PLACES_COUNT } from '../../const';
+import { AuthorizationStatus, NEAR_PLACES_COUNT, AppRoute } from '../../const';
 import { RootState, AppDispatch } from '../../store';
 import {
   fetchOfferAction,
   fetchNearbyOffersAction,
-  fetchCommentsAction
+  fetchCommentsAction,
+  toggleFavoriteAction
 } from '../../store/action';
 import { Spinner } from '../spinner';
 import { capitalize, getBedroomsText, getAdultsText } from '../../utils';
@@ -27,8 +28,18 @@ export function OfferPage() {
   const comments = useSelector((state: RootState) => state.offer.comments);
   const isOfferDataLoading = useSelector((state: RootState) => state.offer.isOfferDataLoading);
   const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
-
   const favoriteOffers = useSelector(getFavoriteOffers);
+
+  const handleFavoriteClick = useCallback(
+    (offerId: string, isFavorite: boolean) => {
+      if (authorizationStatus !== AuthorizationStatus.Auth) {
+        navigate(AppRoute.Login);
+        return;
+      }
+      dispatch(toggleFavoriteAction({ offerId, status: isFavorite ? 0 : 1 }));
+    },
+    [authorizationStatus, dispatch, navigate]
+  );
 
   useEffect(() => {
     if (id) {
@@ -50,7 +61,6 @@ export function OfferPage() {
   const limitedNearbyOffers = nearbyOffers.slice(0, NEAR_PLACES_COUNT);
   const ratingPercent = Math.round(currentOffer.rating) * 20;
   const isAuthorized = authorizationStatus === AuthorizationStatus.Auth;
-
 
   return (
     <div className="page">
@@ -82,7 +92,11 @@ export function OfferPage() {
 
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{currentOffer.title}</h1>
-                <button className="offer__bookmark-button button" type="button">
+                <button
+                  className="offer__bookmark-button button"
+                  type="button"
+                  onClick={() => handleFavoriteClick(currentOffer.id, currentOffer.isFavorite)}
+                >
                   <svg className="offer__bookmark-icon" width={31} height={33}>
                     <use href="#icon-bookmark" />
                   </svg>
@@ -183,6 +197,7 @@ export function OfferPage() {
               listClassName="near-places__list places__list"
               cardClassName="near-places__card place-card"
               imageWrapperClassName="near-places__image-wrapper place-card__image-wrapper"
+              onFavoriteClick={handleFavoriteClick}
             />
           </section>
         </div>

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Offer } from '../types';
 
@@ -9,7 +10,7 @@ interface OfferCardProps {
   onMouseLeave?: () => void;
 }
 
-export function OfferCard({
+function OfferCardComponent({
   offer,
   cardClassName,
   imageWrapperClassName,
@@ -32,7 +33,13 @@ export function OfferCard({
 
       <div className={imageWrapperClassName}>
         <Link to={`/offer/${offer.id}`}>
-          <img className="place-card__image" src={offer.previewImage} width={260} height={200} alt="Place image" />
+          <img
+            className="place-card__image"
+            src={offer.previewImage}
+            width={260}
+            height={200}
+            alt="Place image"
+          />
         </Link>
       </div>
 
@@ -73,3 +80,5 @@ export function OfferCard({
     </article>
   );
 }
+
+export const OfferCard = memo(OfferCardComponent);

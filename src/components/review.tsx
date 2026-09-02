@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Review as ReviewType } from '../types';
 import { formatDateTime, formatDate, calculateRatingPercent } from '../utils';
 
@@ -5,7 +6,7 @@ interface ReviewProps {
   review: ReviewType;
 }
 
-export function Review({ review }: ReviewProps) {
+function ReviewComponent({ review }: ReviewProps) {
   const ratingPercent = calculateRatingPercent(review.rating);
   const formattedDate = formatDate(review.date);
   const dateTime = formatDateTime(review.date);
@@ -42,3 +43,5 @@ export function Review({ review }: ReviewProps) {
     </li>
   );
 }
+
+export const Review = memo(ReviewComponent);

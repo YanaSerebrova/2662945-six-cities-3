@@ -8,6 +8,7 @@ interface OfferListProps {
   imageWrapperClassName: string;
   onCardMouseEnter?: (offerId: string) => void;
   onCardMouseLeave?: () => void;
+  onFavoriteClick?: (offerId: string, isFavorite: boolean) => void;
 }
 
 export function OfferList({
@@ -17,6 +18,7 @@ export function OfferList({
   imageWrapperClassName,
   onCardMouseEnter,
   onCardMouseLeave,
+  onFavoriteClick,
 }: OfferListProps) {
   return (
     <div className={listClassName}>
@@ -28,6 +30,7 @@ export function OfferList({
           imageWrapperClassName={imageWrapperClassName}
           onMouseEnter={() => onCardMouseEnter?.(offer.id)}
           onMouseLeave={() => onCardMouseLeave?.()}
+          onFavoriteClick={() => onFavoriteClick?.(offer.id, offer.isFavorite)}
         />
       ))}
     </div>

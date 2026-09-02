@@ -1,5 +1,5 @@
 import { cities } from '../../const';
-import { fetchOffersAction, ActionCreator } from '../action';
+import { fetchOffersAction, ActionCreator, toggleFavoriteAction } from '../action';
 import { Offer } from '../../types';
 
 type CityName = typeof cities[number];
@@ -20,7 +20,8 @@ export type AppAction =
   | ReturnType<typeof fetchOffersAction.pending>
   | ReturnType<typeof fetchOffersAction.fulfilled>
   | ReturnType<typeof fetchOffersAction.rejected>
-  | ReturnType<typeof ActionCreator.changeCity>;
+  | ReturnType<typeof ActionCreator.changeCity>
+  | ReturnType<typeof toggleFavoriteAction.fulfilled>;
 
 export const appReducer = (state = initialAppState, action: AppAction): AppState => {
   switch (action.type) {
@@ -35,6 +36,7 @@ export const appReducer = (state = initialAppState, action: AppAction): AppState
         isLoading: false
       };
     }
+
     case fetchOffersAction.rejected.type:
       return { ...state, isLoading: false };
 
@@ -45,6 +47,18 @@ export const appReducer = (state = initialAppState, action: AppAction): AppState
         city: typedAction.payload
       };
     }
+
+    case toggleFavoriteAction.fulfilled.type: {
+      const typedAction = action as ReturnType<typeof toggleFavoriteAction.fulfilled>;
+      const updatedOffer = typedAction.payload;
+      return {
+        ...state,
+        offers: state.offers.map((offer) =>
+          offer.id === updatedOffer.id ? updatedOffer : offer
+        ),
+      };
+    }
+
     default:
       return state;
   }

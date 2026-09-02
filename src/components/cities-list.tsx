@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback } from 'react'; // <-- ДОБАВЛЕНО: useCallback
+import { MouseEvent, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreator } from '../store/action';
 import { RootState } from '../store';

@@ -7,6 +7,7 @@ import { Map } from './map';
 import { CitiesList } from './cities-list';
 import { PlacesSorting } from './sorting-places';
 import { Spinner } from './spinner';
+import { CitiesEmpty } from './cities-empty';
 import { SortType, DEFAULT_CITY_LOCATION, AuthorizationStatus, AppRoute } from '../const';
 import { RootState, AppDispatch } from '../store';
 import { getFavoriteOffers } from '../store/selectors';
@@ -85,17 +86,9 @@ export function HomePage() {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
+
               {sortedOffers.length === 0 ? (
-                <div className="cities__places-container cities__places-container--empty container">
-                  <section className="cities__no-places">
-                    <div className="cities__status-wrapper tabs__content">
-                      <b className="cities__status">No places to stay available</b>
-                      <p className="cities__status-description">
-                        We could not find any property available at the moment in {city}
-                      </p>
-                    </div>
-                  </section>
-                </div>
+                <CitiesEmpty city={city} />
               ) : (
                 <>
                   <b className="places__found">
@@ -118,6 +111,7 @@ export function HomePage() {
                   />
                 </>
               )}
+
             </section>
             <div className="cities__right-section">
               <section className="cities__map map">

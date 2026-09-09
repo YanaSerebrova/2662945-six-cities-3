@@ -2,12 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from './index';
 import { Offer } from '../types';
 
-export const getOffers = (state: RootState) => state.app.offers;
-
-export const getFavoriteOffers = createSelector(
-  [getOffers],
-  (offers): Offer[] => offers.filter((offer) => offer.isFavorite)
-);
+export const getFavoriteOffers = (state: RootState): Offer[] => state.app.favoriteOffers;
 
 export const getGroupedFavoriteOffers = createSelector(
   [getFavoriteOffers],

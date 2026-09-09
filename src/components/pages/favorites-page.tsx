@@ -1,14 +1,22 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { Header } from '../header';
 import { Footer } from '../footer';
 import { OfferCard } from '../offer-card';
 import { getFavoriteOffers, getGroupedFavoriteOffers } from '../../store/selectors';
 import { Offer } from '../../types';
+import { fetchFavoriteOffersAction } from '../../store/action';
+import { AppDispatch } from '../../store';
 
 export function FavoritesPage() {
+  const dispatch = useDispatch<AppDispatch>();
   const favoriteOffers = useSelector(getFavoriteOffers);
   const groupedFavorites = useSelector(getGroupedFavoriteOffers);
   const hasFavorites = favoriteOffers.length > 0;
+
+  useEffect(() => {
+    dispatch(fetchFavoriteOffersAction());
+  }, [dispatch]);
 
   return (
     <div className="page">

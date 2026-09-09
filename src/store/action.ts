@@ -103,6 +103,18 @@ export const logoutAction = createAsyncThunk<
   }
 );
 
+export const fetchFavoriteOffersAction = createAsyncThunk<
+  Offer[],
+  undefined,
+  { extra: AxiosInstance }
+>(
+  'user/fetchFavoriteOffers',
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<Offer[]>('/favorite');
+    return data;
+  }
+);
+
 export const toggleFavoriteAction = createAsyncThunk<
   Offer,
   { offerId: string; status: number },
@@ -126,3 +138,4 @@ export const ActionCreator = {
     payload: city,
   } as const),
 };
+

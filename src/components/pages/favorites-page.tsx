@@ -1,14 +1,23 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { Header } from '../header';
 import { Footer } from '../footer';
 import { OfferCard } from '../offer-card';
 import { getFavoriteOffers, getGroupedFavoriteOffers } from '../../store/selectors';
 import { Offer } from '../../types';
+import { fetchFavoriteOffersAction } from '../../store/action';
+import { AppDispatch } from '../../store';
+import { Link } from 'react-router-dom';
 
 export function FavoritesPage() {
+  const dispatch = useDispatch<AppDispatch>();
   const favoriteOffers = useSelector(getFavoriteOffers);
   const groupedFavorites = useSelector(getGroupedFavoriteOffers);
   const hasFavorites = favoriteOffers.length > 0;
+
+  useEffect(() => {
+    dispatch(fetchFavoriteOffersAction());
+  }, [dispatch]);
 
   return (
     <div className="page">
@@ -32,9 +41,9 @@ export function FavoritesPage() {
                     <li key={city} className="favorites__locations-items">
                       <div className="favorites__locations locations locations--current">
                         <div className="locations__item">
-                          <a className="locations__item-link" href="#">
+                          <Link className="locations__item-link" to="/">
                             <span>{city}</span>
-                          </a>
+                          </Link>
                         </div>
                       </div>
 

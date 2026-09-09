@@ -1,15 +1,21 @@
-import { FormEvent, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { FormEvent, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../header';
-import { Link } from 'react-router-dom';
 import { loginAction } from '../../store/action';
-import { AppDispatch } from '../../store';
-import { AppRoute } from '../../const';
+import { ActionCreator } from '../../store/action';
+import { AppDispatch, RootState } from '../../store';
+import { AppRoute, AuthorizationStatus, cities } from '../../const';
 
 export function LoginPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
+  useEffect(() => {
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      navigate(AppRoute.Main);
+    }
+  }, [authorizationStatus, navigate]);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -29,6 +35,13 @@ export function LoginPage() {
         navigate(AppRoute.Main);
       }
     });
+  };
+  const randomCity = cities[Math.floor(Math.random() * cities.length)];
+
+  const handleRandomCityClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    dispatch(ActionCreator.changeCity(randomCity));
+    navigate(AppRoute.Main);
   };
 
   return (
@@ -82,9 +95,9 @@ export function LoginPage() {
 
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <Link className="locations__item-link" to="/">
-                <span>Amsterdam</span>
-              </Link>
+              <a className="locations__item-link" href="/" onClick={handleRandomCityClick}>
+                <span>{randomCity}</span>
+              </a>
             </div>
           </section>
         </div>

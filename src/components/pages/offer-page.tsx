@@ -59,9 +59,13 @@ export function OfferPage() {
   }
 
   const limitedNearbyOffers = nearbyOffers.slice(0, NEAR_PLACES_COUNT);
+  const mapOffers = [currentOffer, ...limitedNearbyOffers];
   const ratingPercent = Math.round(currentOffer.rating) * 20;
   const isAuthorized = authorizationStatus === AuthorizationStatus.Auth;
 
+  const sortedAndLimitedReviews = [...comments]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 10);
   return (
     <div className="page">
       <Header isAuthorized={isAuthorized} favoritesCount={favoriteOffers.length} />
@@ -172,7 +176,7 @@ export function OfferPage() {
               </div>
 
               <section className="offer__reviews reviews">
-                <ReviewList reviews={comments} />
+                <ReviewList reviews={sortedAndLimitedReviews} />
                 {isAuthorized && <ReviewForm offerId={currentOffer.id} />}
               </section>
             </div>
@@ -180,7 +184,7 @@ export function OfferPage() {
 
           <section className="offer__map map">
             <Map
-              offers={limitedNearbyOffers}
+              offers={mapOffers}
               location={currentOffer.location}
               activeOfferId={currentOffer.id}
             />

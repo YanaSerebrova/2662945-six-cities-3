@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutAction } from '../store/action';
-import { AppDispatch } from '../store';
+import { AppDispatch, RootState } from '../store';
 import { AppRoute } from '../const';
 
 type HeaderProps = {
@@ -12,6 +12,7 @@ type HeaderProps = {
 export function Header({ isAuthorized, favoritesCount = 0 }: HeaderProps) {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const userEmail = useSelector((state: RootState) => state.user.userEmail);
 
   const handleLogoutClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
@@ -46,7 +47,7 @@ export function Header({ isAuthorized, favoritesCount = 0 }: HeaderProps) {
                       to="/favorites"
                     >
                       <div className="header__avatar-wrapper user__avatar-wrapper" />
-                      <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                      <span className="header__user-name user__name">{userEmail || 'User'}</span>
                       <span className="header__favorite-count">{favoritesCount}</span>
                     </Link>
                   </li>

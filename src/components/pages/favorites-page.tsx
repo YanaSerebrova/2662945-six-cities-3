@@ -7,6 +7,7 @@ import { getFavoriteOffers, getGroupedFavoriteOffers } from '../../store/selecto
 import { Offer } from '../../types';
 import { fetchFavoriteOffersAction } from '../../store/action';
 import { AppDispatch } from '../../store';
+import { Link } from 'react-router-dom';
 
 export function FavoritesPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,9 +41,9 @@ export function FavoritesPage() {
                     <li key={city} className="favorites__locations-items">
                       <div className="favorites__locations locations locations--current">
                         <div className="locations__item">
-                          <a className="locations__item-link" href="#">
+                          <Link className="locations__item-link" to="/">
                             <span>{city}</span>
-                          </a>
+                          </Link>
                         </div>
                       </div>
 

@@ -8,8 +8,9 @@ import { OfferPage } from './components/pages/offer-page';
 import { AppRoute } from './const';
 import { NotFoundPage } from './components/pages/not-found-page';
 import { PrivateRoute } from './components/pages/private-route';
-import { fetchOffersAction, checkAuthAction } from './store/action';
+import { fetchOffersAction, checkAuthAction, fetchFavoriteOffersAction } from './store/action';
 import { AppDispatch, RootState } from './store';
+import { AuthorizationStatus } from './const';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,6 +20,12 @@ function App() {
     dispatch(checkAuthAction());
     dispatch(fetchOffersAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavoriteOffersAction());
+    }
+  }, [dispatch, authorizationStatus]);
 
   return (
     <Routes>

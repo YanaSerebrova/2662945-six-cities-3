@@ -8,13 +8,19 @@ import { OfferPage } from './components/pages/offer-page';
 import { AppRoute } from './const';
 import { NotFoundPage } from './components/pages/not-found-page';
 import { PrivateRoute } from './components/pages/private-route';
-import { fetchOffersAction, checkAuthAction, fetchFavoriteOffersAction } from './store/action';
+import {
+  fetchOffersAction,
+  checkAuthAction,
+  fetchFavoriteOffersAction,
+} from './store/action';
 import { AppDispatch, RootState } from './store';
 import { AuthorizationStatus } from './const';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const authorizationStatus = useSelector((state: RootState) => state.user.authorizationStatus);
+  const authorizationStatus = useSelector(
+    (state: RootState) => state.user.authorizationStatus,
+  );
 
   useEffect(() => {
     dispatch(checkAuthAction());
